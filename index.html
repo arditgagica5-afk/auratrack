@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
-  <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
-  }
-</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#08080A" />
@@ -22,7 +17,6 @@
 </head>
 <body class="min-h-screen flex flex-col selection:bg-white selection:text-black">
 
-  <!-- TOP BROWSER-CLEAN BAR -->
   <header class="sticky top-0 z-30 border-b border-white/[0.08] bg-[#08080A]/90 backdrop-blur-md">
     <div class="max-w-xl mx-auto px-4 h-12 flex items-center justify-between">
       <div class="flex items-center gap-2.5">
@@ -35,7 +29,6 @@
       </div>
     </div>
 
-    <!-- CLEAN TAB STRIP -->
     <nav class="max-w-xl mx-auto px-4 flex items-center gap-6 overflow-x-auto text-xs border-t border-white/[0.05] h-10 no-scrollbar">
       <button onclick="switchTab('radar')" id="tab-radar" class="tab-btn h-full border-b-2 border-white text-white font-medium whitespace-nowrap">Radar</button>
       <button onclick="switchTab('credits')" id="tab-credits" class="tab-btn h-full border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 whitespace-nowrap">Credits</button>
@@ -46,20 +39,17 @@
 
   <main class="max-w-xl w-full mx-auto px-4 py-6 flex-1">
 
-    <!-- ==================== 1. RADAR VIEW ==================== -->
     <section id="view-radar" class="space-y-6">
       <div class="space-y-1.5">
         <p class="text-[11px] mono uppercase tracking-[0.18em] text-zinc-500">Acoustic Radar &amp; Credit Index</p>
         <h1 class="text-2xl font-semibold tracking-tight text-white">Identify the track.<br><span class="text-zinc-500">Trace everyone in the room.</span></h1>
       </div>
 
-      <!-- Mode Switcher -->
       <div class="grid grid-cols-2 p-1 bg-[#101014] border border-white/[0.08] rounded-lg">
         <button onclick="setInputMode('mic')" id="mode-mic" class="py-2 rounded-md text-xs font-medium bg-zinc-100 text-black transition">Live Mic</button>
         <button onclick="setInputMode('file')" id="mode-file" class="py-2 rounded-md text-xs font-medium text-zinc-400 hover:text-white transition">Upload Audio</button>
       </div>
 
-      <!-- Capture Box -->
       <div class="relative rounded-xl border border-white/[0.08] bg-[#0D0D11] p-5 min-h-[260px] flex flex-col justify-between overflow-hidden">
         <div class="pointer-events-none absolute inset-0 opacity-[0.04]" style="background-image:linear-gradient(to right,#fff 1px,transparent 1px),linear-gradient(to bottom,#fff 1px,transparent 1px);background-size:24px 24px;"></div>
 
@@ -70,7 +60,7 @@
 
         <div class="relative my-6 flex flex-col items-center gap-4">
           <div id="mic-controls" class="w-full flex flex-col items-center gap-3">
-            <button onclick="toggleMicScan()" id="scan-btn" class="w-full max-w-[260px] h-13 py-3.5 rounded-lg bg-white text-black font-mono text-xs uppercase tracking-widest font-medium hover:bg-zinc-200 active:scale-[0.98] transition flex items-center justify-center gap-2.5">
+            <button onclick="toggleMicScan()" id="scan-btn" class="w-full max-w-[260px] py-3.5 rounded-lg bg-white text-black font-mono text-xs uppercase tracking-widest font-medium hover:bg-zinc-200 active:scale-[0.98] transition flex items-center justify-center gap-2.5">
               <span id="scan-dot" class="h-2 w-2 rounded-full bg-black"></span>
               <span id="scan-label">Start Capture (6s)</span>
             </button>
@@ -95,7 +85,6 @@
       </div>
     </section>
 
-    <!-- ==================== 2. CREDITS VIEW ==================== -->
     <section id="view-credits" class="hidden space-y-5">
       <div id="credits-empty" class="rounded-xl border border-white/[0.08] bg-[#0D0D11] p-8 text-center space-y-2">
         <p class="text-sm font-medium text-zinc-300">No track scanned yet</p>
@@ -103,7 +92,6 @@
       </div>
 
       <div id="credits-content" class="hidden space-y-5">
-        <!-- Song Header Card -->
         <div class="rounded-xl border border-white/[0.08] bg-[#0D0D11] p-4 flex items-center justify-between gap-4">
           <div class="min-w-0">
             <p class="text-[10px] mono uppercase tracking-widest text-emerald-400 mb-1">Identified Track</p>
@@ -116,7 +104,6 @@
           </button>
         </div>
 
-        <!-- Deep Credits List -->
         <div class="rounded-xl border border-white/[0.08] bg-[#0D0D11] p-4 space-y-3">
           <div class="flex items-center justify-between border-b border-white/[0.06] pb-2.5">
             <span class="text-xs mono uppercase tracking-wider text-zinc-400">Session Credits &amp; Personnel</span>
@@ -127,7 +114,6 @@
       </div>
     </section>
 
-    <!-- ==================== 3. FOLDERS & PLAYLISTS ==================== -->
     <section id="view-library" class="hidden space-y-5">
       <div class="flex items-center justify-between">
         <div>
@@ -139,29 +125,25 @@
           <button onclick="createPlaylistPrompt()" class="px-3 py-1.5 rounded-lg bg-white text-black text-xs font-medium hover:bg-zinc-200 transition">+ Playlist</button>
         </div>
       </div>
-
       <div id="library-container" class="space-y-4"></div>
     </section>
 
-    <!-- ==================== 4. SETTINGS / KEYS ==================== -->
     <section id="view-settings" class="hidden space-y-5">
       <div class="rounded-xl border border-white/[0.08] bg-[#0D0D11] p-5 space-y-4">
         <div>
           <h2 class="text-sm font-semibold">1. Song Recognition Key (AudD)</h2>
-          <p class="text-xs text-zinc-400 mt-1">Sign up free at <strong>audd.io</strong>, copy your API token, and paste it below.</p>
+          <p class="text-xs text-zinc-400 mt-1">Sign up free at <strong>dashboard.audd.io</strong>, copy your API token, and paste it below.</p>
           <input id="input-audd" type="password" placeholder="Paste AudD API token..." class="mt-2.5 w-full bg-[#08080A] border border-white/10 rounded-lg px-3 py-2 text-xs mono text-white focus:outline-none focus:border-white/40" />
         </div>
 
         <div class="border-t border-white/[0.06] pt-4">
           <h2 class="text-sm font-semibold">2. Spotify Direct Push</h2>
-          <p class="text-xs text-zinc-400 mt-1">
-            Go to <strong>developer.spotify.com</strong> → Create App → set Redirect URI to:
-          </p>
+          <p class="text-xs text-zinc-400 mt-1">Go to <strong>developer.spotify.com</strong> → Create App → set Redirect URI to:</p>
           <code id="redirect-uri-display" class="block mt-1.5 p-2 rounded bg-black border border-white/10 text-[10px] mono text-emerald-400 break-all"></code>
           <input id="input-spotify-id" type="text" placeholder="Paste Spotify Client ID..." class="mt-2.5 w-full bg-[#08080A] border border-white/10 rounded-lg px-3 py-2 text-xs mono text-white focus:outline-none focus:border-white/40" />
         </div>
 
-        <div class="flex gap-2 pt-2">
+        <div class="flex flex-wrap gap-2 pt-2">
           <button onclick="saveKeys()" class="px-4 py-2 rounded-lg bg-white text-black text-xs font-medium hover:bg-zinc-200 transition">Save Keys</button>
           <button onclick="connectSpotify()" class="px-4 py-2 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-emerald-300 text-xs font-medium hover:bg-emerald-500/20 transition">Connect Spotify Account</button>
         </div>
@@ -170,7 +152,6 @@
 
   </main>
 
-  <!-- MODAL: SAVE SONG TO PLAYLIST -->
   <div id="save-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
     <div class="w-full max-w-md rounded-xl border border-white/15 bg-[#101014] p-5 space-y-4">
       <div class="flex justify-between items-center">
@@ -181,228 +162,11 @@
     </div>
   </div>
 
-<script>
-// ==================== STATE & STORAGE ====================
-const defaultState = {
-  folders: [
-    { id: 'f_default', name: 'Unsorted Vault' },
-    { id: 'f_studio', name: 'Late Night Samples' }
-  ],
-  playlists: [
-    { id: 'p_1', folderId: 'f_default', name: 'Identified Bangers', tracks: [] },
-    { id: 'p_2', folderId: 'f_studio', name: 'Guitar & Synth Chops', tracks: [] }
-  ]
-};
-
-let folders = JSON.parse(localStorage.getItem('at_folders')) || defaultState.folders;
-let playlists = JSON.parse(localStorage.getItem('at_playlists')) || defaultState.playlists;
-let keys = JSON.parse(localStorage.getItem('at_keys')) || { audd: '', spotifyClientId: '' };
-let spotifyAuth = JSON.parse(localStorage.getItem('at_spotify_auth')) || null;
-let currentTrack = null;
-let inputMode = 'mic';
-let mediaRecorder = null;
-let isRecording = false;
-
-function persist() {
-  localStorage.setItem('at_folders', JSON.stringify(folders));
-  localStorage.setItem('at_playlists', JSON.stringify(playlists));
-  localStorage.setItem('at_keys', JSON.stringify(keys));
-  renderLibrary();
-}
-
-// ==================== INIT & SPOTIFY OAUTH RETURN ====================
-window.addEventListener('DOMContentLoaded', async () => {
-  document.getElementById('input-audd').value = keys.audd || '';
-  document.getElementById('input-spotify-id').value = keys.spotifyClientId || '';
-  document.getElementById('redirect-uri-display').textContent = window.location.origin + window.location.pathname;
-
-  const params = new URLSearchParams(window.location.search);
-  const code = params.get('code');
-  if (code) {
-    await exchangeSpotifyCode(code);
-    window.history.replaceState({}, document.title, window.location.pathname);
-  }
-  updateSpotifyPill();
-  renderLibrary();
-});
-
-function updateSpotifyPill() {
-  const pill = document.getElementById('spotify-pill');
-  if (spotifyAuth && spotifyAuth.accessToken && Date.now() < spotifyAuth.expiresAt) {
-    pill.textContent = 'SPOTIFY: CONNECTED';
-    pill.className = 'text-[11px] mono text-emerald-400 border border-emerald-500/30 px-2.5 py-1 rounded bg-emerald-500/10';
-  } else {
-    pill.textContent = 'SPOTIFY: OFF';
-    pill.className = 'text-[11px] mono text-zinc-400 border border-white/10 px-2.5 py-1 rounded bg-white/[0.03]';
-  }
-}
-
-// ==================== NAVIGATION ====================
-function switchTab(tab) {
-  ['radar', 'credits', 'library', 'settings'].forEach(t => {
-    document.getElementById('view-' + t).classList.toggle('hidden', t !== tab);
-    const btn = document.getElementById('tab-' + t);
-    btn.className = t === tab
-      ? 'tab-btn h-full border-b-2 border-white text-white font-medium whitespace-nowrap'
-      : 'tab-btn h-full border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 whitespace-nowrap';
-  });
-}
-
-function setInputMode(mode) {
-  inputMode = mode;
-  document.getElementById('radar-input-label').textContent = mode === 'mic' ? 'INPUT: LIVE MIC' : 'INPUT: AUDIO FILE';
-  document.getElementById('mic-controls').classList.toggle('hidden', mode !== 'mic');
-  document.getElementById('file-controls').classList.toggle('hidden', mode !== 'file');
-  document.getElementById('mode-mic').className = mode === 'mic' ? 'py-2 rounded-md text-xs font-medium bg-zinc-100 text-black transition' : 'py-2 rounded-md text-xs font-medium text-zinc-400 hover:text-white transition';
-  document.getElementById('mode-file').className = mode === 'file' ? 'py-2 rounded-md text-xs font-medium bg-zinc-100 text-black transition' : 'py-2 rounded-md text-xs font-medium text-zinc-400 hover:text-white transition';
-}
-
-function logConsole(msg, state = 'OK') {
-  document.getElementById('console-log').textContent = '> ' + msg;
-  document.getElementById('console-state').textContent = state;
-}
-
-// ==================== AUDIO CAPTURE & AUDD ====================
-async function toggleMicScan() {
-  if (isRecording) {
-    mediaRecorder.stop();
-    return;
-  }
-  if (!keys.audd) {
-    alert('Paste your free AudD API token in Keys / Setup first, or click "Test with Demo Track".');
-    switchTab('settings');
-    return;
-  }
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const chunks = [];
-    mediaRecorder = new MediaRecorder(stream);
-    mediaRecorder.ondataavailable = e => chunks.push(e.data);
-    mediaRecorder.onstop = async () => {
-      isRecording = false;
-      stream.getTracks().forEach(t => t.stop());
-      setScanUI(false);
-      const blob = new Blob(chunks, { type: 'audio/webm' });
-      await sendToAudD(blob);
-    };
-
-    mediaRecorder.start();
-    isRecording = true;
-    setScanUI(true);
-    logConsole('recording acoustic fingerprint (6s)...', 'LIVE');
-    setTimeout(() => { if (isRecording) mediaRecorder.stop(); }, 6000);
-  } catch (err) {
-    logConsole('mic blocked: ' + err.message, 'ERR');
-  }
-}
-
-function setScanUI(active) {
-  const btn = document.getElementById('scan-btn');
-  const dot = document.getElementById('scan-dot');
-  const lbl = document.getElementById('scan-label');
-  if (active) {
-    btn.className = 'w-full max-w-[260px] py-3.5 rounded-lg bg-red-500/15 border border-red-500/60 text-red-400 font-mono text-xs uppercase tracking-widest flex items-center justify-center gap-2.5';
-    dot.className = 'h-2 w-2 rounded-full bg-red-500 animate-ping';
-    lbl.textContent = 'Listening... Tap to Stop';
-  } else {
-    btn.className = 'w-full max-w-[260px] py-3.5 rounded-lg bg-white text-black font-mono text-xs uppercase tracking-widest font-medium hover:bg-zinc-200 transition flex items-center justify-center gap-2.5';
-    dot.className = 'h-2 w-2 rounded-full bg-black';
-    lbl.textContent = 'Start Capture (6s)';
-  }
-}
-
-async function scanAudioFile(file) {
-  if (!file) return;
-  if (!keys.audd) {
-    alert('Paste your free AudD API token in Keys / Setup first.');
-    switchTab('settings');
-    return;
-  }
-  await sendToAudD(file);
-}
-
-async function sendToAudD(audioBlob) {
-  logConsole('querying acoustic database...', 'BUSY');
-  const fd = new FormData();
-  fd.append('api_token', keys.audd);
-  fd.append('file', audioBlob);
-  fd.append('return', 'spotify');
-
-  try {
-    const res = await fetch('https://api.audd.io/', { method: 'POST', body: fd });
-    const contentType = res.headers.get('content-type') || '';
-    if (!contentType.includes('application/json')) {
-      throw new Error('Non-JSON response from API (' + res.status + ')');
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
     }
-    const data = await res.json();
-    if (data.status !== 'success' || !data.result) {
-      logConsole(data.error?.error_message || 'No match found. Try louder audio.', 'MISS');
-      return;
-    }
-    const r = data.result;
-    await loadTrackAndCredits({
-      title: r.title,
-      artist: r.artist,
-      album: r.album || 'Single',
-      spotifyUri: r.spotify?.uri || null
-    });
-  } catch (err) {
-    logConsole(err.message, 'ERR');
-  }
-}
-
-async function runDemoTrack() {
-  await loadTrackAndCredits({
-    title: 'Nights',
-    artist: 'Frank Ocean',
-    album: 'Blonde',
-    spotifyUri: null
-  });
-}
-
-// ==================== DEEP CREDITS (MUSICBRAINZ FREE API) ====================
-async function loadTrackAndCredits(track) {
-  currentTrack = track;
-  logConsole('pulling studio credits...', 'BUSY');
-
-  document.getElementById('credits-empty').classList.add('hidden');
-  document.getElementById('credits-content').classList.remove('hidden');
-  document.getElementById('res-title').textContent = track.title;
-  document.getElementById('res-artist').textContent = track.artist;
-  document.getElementById('res-album').textContent = track.album;
-
-  const list = document.getElementById('credits-list');
-  list.innerHTML = '<p class="text-zinc-500 mono">Searching MusicBrainz session logs...</p>';
-  switchTab('credits');
-
-  try {
-    const q = encodeURIComponent(`recording:"${track.title}" AND artist:"${track.artist}"`);
-    const searchRes = await fetch(`https://musicbrainz.org/ws/2/recording?query=${q}&fmt=json&limit=3`);
-    const searchJson = await searchRes.json();
-
-    if (!searchJson.recordings || searchJson.recordings.length === 0) {
-      list.innerHTML = '<p class="text-zinc-500">No deep studio credits indexed for this exact recording yet.</p>';
-      logConsole('track found (limited credits)', 'OK');
-      return;
-    }
-
-    const mbid = searchJson.recordings[0].id;
-    const detailRes = await fetch(`https://musicbrainz.org/ws/2/recording/${mbid}?inc=artist-rels+work-rels+label-rels+place-rels&fmt=json`);
-    const detail = await detailRes.json();
-
-    let rows = [];
-    const extractRels = (rels) => {
-      (rels || []).forEach(rel => {
-        const who = rel.artist?.name || rel.place?.name || rel.label?.name;
-        if (!who) return;
-        const attrs = rel.attributes?.length ? ` (${rel.attributes.join(', ')})` : '';
-        rows.push({ role: rel.type + attrs, name: who });
-      });
-    };
-
-    extractRels(detail.relations);
-
-    // Also pull writers/composers from linked Work
-    const workRel = (detail.relations || []).find(r => r.work);
-    if (workRel?.work?.id) {
-      const workRes = await fetch(`https://musicbrainz.org/ws/2/work/${workRel.work.id}?inc=artist-rels
+  </script>
+</body>
+        </html>
