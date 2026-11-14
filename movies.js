@@ -124,6 +124,7 @@ async function showMovieCredits(info) {
   }
 
   list.innerHTML = rows.length ? rows.map(r => `<div class="flex justify-between gap-4 py-2 border-b border-white/[0.04] last:border-0"><span class="mono uppercase text-[10px] text-zinc-500 shrink-0">${escapeHtml(r.role)}</span><span class="font-medium text-zinc-200 text-right">${escapeHtml(r.name)}</span></div>`).join('') : '<p class="text-zinc-500">Add a free TMDB key in Setup for full cast &amp; posters.</p>';
+  saveToHistory({ ...currentTrack, poster: poster.classList.contains('hidden') ? '' : poster.src, credits: rows });
   switchTab('credits');
 }
 // END MOVIES
