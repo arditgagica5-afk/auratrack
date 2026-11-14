@@ -6,37 +6,11 @@
   <meta name="theme-color" content="#08080A" />
   <title>AuraTrack // Audio Forensics</title>
   <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Inter', sans-serif; background: #08080A; color: #F4F4F5; -webkit-tap-highlight-color: transparent; }
-    .mono { font-family: 'JetBrains Mono', monospace; }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-    @keyframes vinylSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    @keyframes heartbeatRing {
-      0%   { transform: scale(0.95); opacity: 0.75; }
-      70%  { transform: scale(1.42); opacity: 0; }
-      100% { transform: scale(1.42); opacity: 0; }
-    }
-    @keyframes eqBounce {
-      0%, 100% { transform: scaleY(0.3); }
-      50% { transform: scaleY(1); }
-    }
-    .vinyl-spinning { animation: vinylSpin 1.8s linear infinite; }
-    .ring-pulse-1 { animation: heartbeatRing 1.6s cubic-bezier(0.2, 0.7, 0.3, 1) infinite; }
-    .ring-pulse-2 { animation: heartbeatRing 1.6s cubic-bezier(0.2, 0.7, 0.3, 1) 0.8s infinite; }
-    .eq-active span { animation: eqBounce 0.65s ease-in-out infinite; }
-    .eq-active span:nth-child(2) { animation-delay: 0.12s; }
-    .eq-active span:nth-child(3) { animation-delay: 0.25s; }
-    .eq-active span:nth-child(4) { animation-delay: 0.1s; }
-    .eq-active span:nth-child(5) { animation-delay: 0.3s; }
-  </style>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-white selection:text-black">
-
-  <!-- TOP BAR -->
   <header class="sticky top-0 z-30 border-b border-white/[0.08] bg-[#08080A]/90 backdrop-blur-md">
     <div class="max-w-xl mx-auto px-4 h-12 flex items-center justify-between">
       <div class="flex items-center gap-2.5">
@@ -44,58 +18,38 @@
         <span class="text-xs font-semibold tracking-wider uppercase">AuraTrack</span>
         <span class="text-[10px] mono text-zinc-500 border border-white/10 px-1.5 py-0.5 rounded">2.5</span>
       </div>
-      <div id="spotify-pill" class="text-[11px] mono text-zinc-400 border border-white/10 px-2.5 py-1 rounded bg-white/[0.03]">
-        SPOTIFY: OFF
-      </div>
+      <div id="spotify-pill" class="text-[11px] mono text-zinc-400 border border-white/10 px-2.5 py-1 rounded bg-white/[0.03]">SPOTIFY: OFF</div>
     </div>
-
     <nav class="max-w-xl mx-auto px-4 flex items-center gap-6 overflow-x-auto text-xs border-t border-white/[0.05] h-10 no-scrollbar">
       <button onclick="switchTab('radar')" id="tab-radar" class="tab-btn h-full border-b-2 border-white text-white font-medium whitespace-nowrap">Radar</button>
-      <button onclick="switchTab('credits')" id="tab-credits" class="tab-btn h-full border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 whitespace-nowrap">Credits</button>
-      <button onclick="switchTab('library')" id="tab-library" class="tab-btn h-full border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 whitespace-nowrap">Folders &amp; Playlists</button>
-      <button onclick="switchTab('settings')" id="tab-settings" class="tab-btn h-full border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 whitespace-nowrap">Keys / Setup</button>
+      <button onclick="switchTab('credits')" id="tab-credits" class="tab-btn h-full border-b-2 border-transparent text-zinc-500 whitespace-nowrap">Credits</button>
+      <button onclick="switchTab('library')" id="tab-library" class="tab-btn h-full border-b-2 border-transparent text-zinc-500 whitespace-nowrap">Folders &amp; Playlists</button>
+      <button onclick="switchTab('settings')" id="tab-settings" class="tab-btn h-full border-b-2 border-transparent text-zinc-500 whitespace-nowrap">Keys / Setup</button>
     </nav>
   </header>
-
   <main class="max-w-xl w-full mx-auto px-4 py-5 flex-1 flex flex-col">
-
-    <!-- ==================== 1. RADAR VIEW ==================== -->
     <section id="view-radar" class="space-y-5 flex-1 flex flex-col">
       <div class="space-y-1">
         <p class="text-[11px] mono uppercase tracking-[0.18em] text-zinc-500">Acoustic Radar &amp; Credit Index</p>
         <h1 class="text-2xl font-semibold tracking-tight text-white">Tap the vinyl to scan.<br><span class="text-zinc-500">Trace everyone in the session.</span></h1>
       </div>
-
       <div class="grid grid-cols-2 p-1 bg-[#101014] border border-white/[0.08] rounded-lg">
         <button onclick="setInputMode('mic')" id="mode-mic" class="py-2 rounded-md text-xs font-medium bg-zinc-100 text-black transition">Live Microphone</button>
-        <button onclick="setInputMode('file')" id="mode-file" class="py-2 rounded-md text-xs font-medium text-zinc-400 hover:text-white transition">Upload Song File</button>
+        <button onclick="setInputMode('file')" id="mode-file" class="py-2 rounded-md text-xs font-medium text-zinc-400 transition">Upload Song File</button>
       </div>
-
       <div class="relative flex-1 min-h-[340px] rounded-xl border border-white/[0.08] bg-[#0D0D11] p-5 flex flex-col justify-between overflow-hidden">
         <div class="pointer-events-none absolute inset-0 opacity-[0.04]" style="background-image:linear-gradient(to right,#fff 1px,transparent 1px),linear-gradient(to bottom,#fff 1px,transparent 1px);background-size:24px 24px;"></div>
-
-        <div class="relative flex justify-between text-[11px] mono text-zinc-500">
-          <span id="radar-input-label">MODE // LIVE MIC</span>
-          <span>48KHZ</span>
-        </div>
-
-        <!-- LIVE MIC: SPINNING VINYL + HEARTBEAT -->
+        <div class="relative flex justify-between text-[11px] mono text-zinc-500"><span id="radar-input-label">MODE // LIVE MIC</span><span>48KHZ</span></div>
         <div id="mic-controls" class="relative my-4 flex flex-col items-center justify-center gap-5">
           <button onclick="toggleMicScan()" id="vinyl-btn" class="relative w-44 h-44 flex items-center justify-center focus:outline-none active:scale-95 transition-transform">
-            <!-- Heartbeat Pulse Rings (visible when scanning) -->
             <span id="vinyl-ring-1" class="hidden absolute inset-0 rounded-full border border-emerald-400/50 ring-pulse-1 pointer-events-none"></span>
             <span id="vinyl-ring-2" class="hidden absolute inset-0 rounded-full border border-white/30 ring-pulse-2 pointer-events-none"></span>
-
-            <!-- Vinyl Disc -->
             <div id="vinyl-disc" class="relative w-40 h-40 rounded-full bg-[#111115] border border-white/15 shadow-2xl flex items-center justify-center overflow-hidden">
-              <!-- Light sheen so rotation is super visible -->
-              <div class="absolute inset-0 rounded-full pointer-events-none" style="background: conic-gradient(from 15deg, rgba(255,255,255,0.11) 0deg 38deg, transparent 38deg 180deg, rgba(255,255,255,0.08) 180deg 218deg, transparent 218deg 360deg);"></div>
-              <!-- Subtle vinyl grooves -->
+              <div class="absolute inset-0 rounded-full pointer-events-none" style="background:conic-gradient(from 15deg,rgba(255,255,255,0.11) 0deg 38deg,transparent 38deg 180deg,rgba(255,255,255,0.08) 180deg 218deg,transparent 218deg 360deg);"></div>
               <div class="w-32 h-32 rounded-full border border-white/[0.07] flex items-center justify-center">
                 <div class="w-24 h-24 rounded-full border border-white/[0.07] flex items-center justify-center">
-                  <!-- Center Label -->
-                  <div class="w-14 h-14 rounded-full bg-zinc-100 text-black flex flex-col items-center justify-center border-2 border-zinc-800 shadow-inner">
-                    <span class="text-[9px] mono font-bold tracking-tighter leading-none">AURA</span>
+                  <div class="w-14 h-14 rounded-full bg-zinc-100 text-black flex flex-col items-center justify-center border-2 border-zinc-800">
+                    <span class="text-[9px] mono font-bold leading-none">AURA</span>
                     <span class="w-2.5 h-2.5 rounded-full bg-[#0D0D11] my-0.5"></span>
                     <span class="text-[7px] mono text-zinc-600 leading-none">33RPM</span>
                   </div>
@@ -103,52 +57,31 @@
               </div>
             </div>
           </button>
-
-          <!-- Status + Equalizer -->
           <div class="text-center space-y-1.5">
             <div id="vinyl-eq" class="flex items-center justify-center gap-1 h-4">
-              <span class="w-1 h-full bg-zinc-600 rounded-full"></span>
-              <span class="w-1 h-full bg-zinc-600 rounded-full"></span>
-              <span class="w-1 h-full bg-zinc-600 rounded-full"></span>
-              <span class="w-1 h-full bg-zinc-600 rounded-full"></span>
-              <span class="w-1 h-full bg-zinc-600 rounded-full"></span>
+              <span class="w-1 h-full bg-zinc-600 rounded-full"></span><span class="w-1 h-full bg-zinc-600 rounded-full"></span><span class="w-1 h-full bg-zinc-600 rounded-full"></span><span class="w-1 h-full bg-zinc-600 rounded-full"></span><span class="w-1 h-full bg-zinc-600 rounded-full"></span>
             </div>
             <p id="scan-status-title" class="text-xs font-medium text-white">Tap vinyl to listen</p>
             <p id="scan-status-sub" class="text-[11px] text-zinc-500">Plays music near your mic for 6 seconds</p>
           </div>
         </div>
-
-        <!-- FILE UPLOAD CONTROLS -->
         <div id="file-controls" class="hidden relative my-10 flex flex-col items-center gap-4">
-          <label class="w-full max-w-[260px] py-5 px-4 rounded-xl border border-dashed border-white/25 hover:border-white/50 bg-white/[0.02] text-center cursor-pointer space-y-1 transition">
-            <div class="text-xs font-medium text-white">Choose Audio File</div>
-            <div class="text-[10px] mono text-zinc-500">MP3 / WAV / M4A</div>
+          <label class="w-full max-w-[260px] py-5 px-4 rounded-xl border border-dashed border-white/25 bg-white/[0.02] text-center cursor-pointer space-y-1">
+            <div class="text-xs font-medium text-white">Choose Audio File</div><div class="text-[10px] mono text-zinc-500">MP3 / WAV / M4A</div>
             <input type="file" accept="audio/*" class="hidden" onchange="scanAudioFile(this.files[0])" />
           </label>
         </div>
-
         <div class="relative space-y-3">
-          <div class="text-center">
-            <button onclick="runDemoTrack()" class="text-[11px] mono text-zinc-500 hover:text-zinc-200 underline underline-offset-4">
-              Try with Demo Song
-            </button>
-          </div>
-          <div class="border-t border-white/[0.06] pt-3 flex justify-between text-[11px] mono text-zinc-500">
-            <span id="console-log">&gt; ready.</span>
-            <span id="console-state">IDLE</span>
-          </div>
+          <div class="text-center"><button onclick="runDemoTrack()" class="text-[11px] mono text-zinc-500 underline underline-offset-4">Try with Demo Song</button></div>
+          <div class="border-t border-white/[0.06] pt-3 flex justify-between text-[11px] mono text-zinc-500"><span id="console-log">&gt; ready.</span><span id="console-state">IDLE</span></div>
         </div>
       </div>
     </section>
-
-    <!-- ==================== 2. CREDITS VIEW ==================== -->
     <section id="view-credits" class="hidden space-y-5">
       <div id="credits-empty" class="rounded-xl border border-white/[0.08] bg-[#0D0D11] p-8 text-center space-y-3">
         <p class="text-sm font-medium text-zinc-200">No track scanned yet</p>
-        <p class="text-xs text-zinc-500">Head to Radar and tap the vinyl to identify a song and view everyone who worked on it.</p>
         <button onclick="switchTab('radar')" class="px-4 py-2 rounded-lg bg-white text-black text-xs font-medium">Go to Radar</button>
       </div>
-
       <div id="credits-content" class="hidden space-y-4">
         <div class="rounded-xl border border-white/[0.08] bg-[#0D0D11] p-4 space-y-3">
           <div class="flex items-start justify-between gap-3">
@@ -158,98 +91,51 @@
               <p id="res-artist" class="text-sm text-zinc-400 truncate"></p>
               <p id="res-album" class="text-xs mono text-zinc-500 mt-0.5 truncate"></p>
             </div>
-            <button onclick="openSaveModal()" class="shrink-0 px-3 py-2 rounded-lg bg-white text-black text-xs font-semibold hover:bg-zinc-200 transition">
-              + Save
-            </button>
+            <button onclick="openSaveModal()" class="shrink-0 px-3 py-2 rounded-lg bg-white text-black text-xs font-semibold">+ Save</button>
           </div>
-
           <div class="flex gap-2 pt-2 border-t border-white/[0.06]">
-            <a id="btn-sp-search" target="_blank" class="flex-1 text-center py-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 text-xs font-medium hover:bg-emerald-500/20">Open in Spotify ↗</a>
-            <a id="btn-yt" target="_blank" class="flex-1 text-center py-2 rounded-lg border border-white/10 bg-white/[0.04] text-zinc-200 text-xs font-medium hover:bg-white/10">Search YouTube ↗</a>
+            <a id="btn-sp-search" target="_blank" class="flex-1 text-center py-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 text-xs font-medium">Open in Spotify ↗</a>
+            <a id="btn-yt" target="_blank" class="flex-1 text-center py-2 rounded-lg border border-white/10 bg-white/[0.04] text-zinc-200 text-xs font-medium">Search YouTube ↗</a>
           </div>
         </div>
-
         <div class="rounded-xl border border-white/[0.08] bg-[#0D0D11] p-4 space-y-3">
-          <div class="flex items-center justify-between border-b border-white/[0.06] pb-2.5">
-            <span class="text-xs mono uppercase tracking-wider text-zinc-400">Everyone on the Track</span>
-            <span class="text-[10px] mono text-zinc-500">MUSICBRAINZ</span>
-          </div>
+          <div class="flex items-center justify-between border-b border-white/[0.06] pb-2.5"><span class="text-xs mono uppercase tracking-wider text-zinc-400">Everyone on the Track</span><span class="text-[10px] mono text-zinc-500">MUSICBRAINZ</span></div>
           <div id="credits-list" class="space-y-1 text-xs"></div>
         </div>
       </div>
     </section>
-
-    <!-- ==================== 3. FOLDERS & PLAYLISTS ==================== -->
     <section id="view-library" class="hidden space-y-5">
       <div class="flex items-center justify-between gap-2">
-        <div>
-          <h2 class="text-lg font-semibold">Vault</h2>
-          <p class="text-xs text-zinc-500">Organize folders &amp; push playlists to Spotify.</p>
-        </div>
-        <div class="flex gap-2">
-          <button onclick="createFolderPrompt()" class="px-3 py-1.5 rounded-lg border border-white/15 hover:border-white/30 text-xs font-medium transition">+ Folder</button>
-          <button onclick="createPlaylistPrompt()" class="px-3 py-1.5 rounded-lg bg-white text-black text-xs font-semibold hover:bg-zinc-200 transition">+ Playlist</button>
-        </div>
+        <div><h2 class="text-lg font-semibold">Vault</h2><p class="text-xs text-zinc-500">Organize folders &amp; push playlists.</p></div>
+        <div class="flex gap-2"><button onclick="createFolderPrompt()" class="px-3 py-1.5 rounded-lg border border-white/15 text-xs font-medium">+ Folder</button><button onclick="createPlaylistPrompt()" class="px-3 py-1.5 rounded-lg bg-white text-black text-xs font-semibold">+ Playlist</button></div>
       </div>
       <div id="library-container" class="space-y-4"></div>
     </section>
-
-    <!-- ==================== 4. SETTINGS / KEYS ==================== -->
     <section id="view-settings" class="hidden space-y-4">
       <div class="rounded-xl border border-white/[0.08] bg-[#0D0D11] p-5 space-y-4">
-        <div class="flex items-center justify-between">
-          <div>
-            <h2 class="text-sm font-semibold">1. Song Recognition (AudD)</h2>
-            <p class="text-xs text-zinc-400 mt-0.5">Get your free key at <strong>dashboard.audd.io</strong></p>
-          </div>
-          <span id="badge-audd" class="text-[10px] mono px-2 py-0.5 rounded border"></span>
-        </div>
-        <input id="input-audd" type="password" placeholder="Paste AudD API token..." class="w-full bg-[#08080A] border border-white/10 rounded-lg px-3 py-2.5 text-xs mono text-white focus:outline-none focus:border-white/40" />
-
+        <div class="flex items-center justify-between"><div><h2 class="text-sm font-semibold">1. Song Recognition (AudD)</h2><p class="text-xs text-zinc-400 mt-0.5">Get key at <strong>dashboard.audd.io</strong></p></div><span id="badge-audd" class="text-[10px] mono px-2 py-0.5 rounded border"></span></div>
+        <input id="input-audd" type="password" placeholder="Paste AudD API token..." class="w-full bg-[#08080A] border border-white/10 rounded-lg px-3 py-2.5 text-xs mono text-white" />
         <div class="border-t border-white/[0.06] pt-4 space-y-2.5">
-          <div class="flex items-center justify-between">
-            <div>
-              <h2 class="text-sm font-semibold">2. Spotify Direct Push</h2>
-              <p class="text-xs text-zinc-400 mt-0.5">Redirect URI for <strong>developer.spotify.com</strong>:</p>
-            </div>
-            <span id="badge-spotify" class="text-[10px] mono px-2 py-0.5 rounded border"></span>
-          </div>
-
-          <div class="flex items-center gap-2">
-            <code id="redirect-uri-display" class="flex-1 p-2 rounded bg-black border border-white/10 text-[10px] mono text-emerald-400 break-all"></code>
-            <button onclick="copyRedirectUri()" class="shrink-0 px-2.5 py-2 rounded bg-white/10 hover:bg-white/20 text-[11px] font-medium">Copy</button>
-          </div>
-
-          <input id="input-spotify-id" type="text" placeholder="Paste Spotify Client ID..." class="w-full bg-[#08080A] border border-white/10 rounded-lg px-3 py-2.5 text-xs mono text-white focus:outline-none focus:border-white/40" />
+          <div class="flex items-center justify-between"><div><h2 class="text-sm font-semibold">2. Spotify Direct Push</h2><p class="text-xs text-zinc-400 mt-0.5">Redirect URI:</p></div><span id="badge-spotify" class="text-[10px] mono px-2 py-0.5 rounded border"></span></div>
+          <div class="flex items-center gap-2"><code id="redirect-uri-display" class="flex-1 p-2 rounded bg-black border border-white/10 text-[10px] mono text-emerald-400 break-all"></code><button onclick="copyRedirectUri()" class="shrink-0 px-2.5 py-2 rounded bg-white/10 text-[11px] font-medium">Copy</button></div>
+          <input id="input-spotify-id" type="text" placeholder="Paste Spotify Client ID..." class="w-full bg-[#08080A] border border-white/10 rounded-lg px-3 py-2.5 text-xs mono text-white" />
         </div>
-
         <div class="flex flex-wrap gap-2 pt-2">
-          <button onclick="saveKeys()" class="px-4 py-2.5 rounded-lg bg-white text-black text-xs font-semibold hover:bg-zinc-200 transition">Save Keys</button>
-          <button onclick="connectSpotify()" class="px-4 py-2.5 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-emerald-300 text-xs font-medium hover:bg-emerald-500/20 transition">Connect Spotify</button>
-          <a href="guide.html" class="ml-auto px-3 py-2.5 rounded-lg border border-white/10 text-xs text-zinc-400 hover:text-white">Manual ↗</a>
+          <button onclick="saveKeys()" class="px-4 py-2.5 rounded-lg bg-white text-black text-xs font-semibold">Save Keys</button>
+          <button onclick="connectSpotify()" class="px-4 py-2.5 rounded-lg border border-emerald-500/40 bg-emerald-500/10 text-emerald-300 text-xs font-medium">Connect Spotify</button>
+          <a href="guide.html" class="ml-auto px-3 py-2.5 rounded-lg border border-white/10 text-xs text-zinc-400">Manual ↗</a>
         </div>
       </div>
     </section>
-
   </main>
-
-  <!-- SAVE TO PLAYLIST MODAL -->
   <div id="save-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
     <div class="w-full max-w-md rounded-xl border border-white/15 bg-[#101014] p-5 space-y-4">
-      <div class="flex justify-between items-center">
-        <h3 class="text-sm font-semibold">Save Track to Playlist</h3>
-        <button onclick="closeSaveModal()" class="text-xs text-zinc-400 hover:text-white">Close</button>
-      </div>
+      <div class="flex justify-between items-center"><h3 class="text-sm font-semibold">Save Track to Playlist</h3><button onclick="closeSaveModal()" class="text-xs text-zinc-400">Close</button></div>
       <div id="modal-playlist-list" class="space-y-2 max-h-60 overflow-y-auto"></div>
     </div>
   </div>
-
-  <!-- SLEEK TOAST -->
   <div id="app-toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 px-4 py-2 rounded-lg bg-zinc-900 border border-white/20 text-xs text-white shadow-xl opacity-0 pointer-events-none transition-opacity whitespace-nowrap"></div>
-
-  <script src="app.js"></script>
-  <script>
-    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
-  </script>
+  <script src="vault.js"></script><script src="radar.js"></script>
+  <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');</script>
 </body>
 </html>
